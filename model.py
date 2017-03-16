@@ -7,7 +7,7 @@ import time
 import numpy as np
 from PIL import Image, ImageDraw
 
-IMG_MEAN = np.array((98, 97, 101), dtype=np.float32)
+IMG_MEAN = np.array((103.939, 116.779, 123.68), dtype=np.float32)
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -351,7 +351,7 @@ class CatznDogs(Network):
         preds_batch = tf.cast(tf.argmax(logits, axis=1), dtype=tf.int32)
         label_batch = tf.reshape(label_batch, [-1])
         accuracy, update_op = self.accuracy(preds_batch, label_batch)
-        step_accuracy, _ = self.step_accuracy(preds_batch, label_batch)
+        step_accuracy = self.step_accuracy(preds_batch, label_batch)
         loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=label_batch)
         l2_losses = [FLAGS.weight_decay * tf.nn.l2_loss(v) for v in tf.trainable_variables() if 'weights' in v.name]
         reduced_loss = tf.reduce_mean(loss) + tf.add_n(l2_losses)
@@ -581,4 +581,5 @@ class CatznDogs(Network):
         return tf.metrics.accuracy(y_true, y_pred, name="accuracy")
 
     def step_accuracy(self, y_pred, y_true):
-        return tf.metrics.accuracy(y_true, y_pred, name="step_accuracy")
+        correct_prediction = tf.equal(tf.round(y_pred), tf.round(y_true))
+        return tf.reduce_mean(tf.cast(correct_prediction, tf.float32), name="step_accuracy")
