@@ -20,30 +20,20 @@ train_cats = cat_images[:1000]
 val_cats = cat_images[1000:]
 train_dogs = dog_images[:1000]
 val_dogs = dog_images[1000:]
-tf.gfile.DeleteRecursively('./data/train/cats')
-tf.gfile.MakeDirs('./data/train/cats')
-tf.gfile.DeleteRecursively('./data/train/dogs')
-tf.gfile.MakeDirs('./data/train/dogs')
-tf.gfile.DeleteRecursively('./data/val/cats')
-tf.gfile.MakeDirs('./data/val/cats')
-tf.gfile.DeleteRecursively('./data/val/dogs')
-tf.gfile.MakeDirs('./data/val/dogs')
 
-for image, filename in train_cats:
-    new_image_path = os.path.join("./data/train/cats", filename)
-    copyfile(image, new_image_path)
+directories = ['./data/train/cats', './data/train/dogs', './data/val/cats', './data/val/dogs']
+lists = [train_cats, train_dogs, val_cats, val_dogs]
+for dir in directories:
+    if not tf.gfile.Exists(dir):
+        tf.gfile.MakeDirs(dir)
+    else:
+        tf.gfile.DeleteRecursively(dir)
+        tf.gfile.MakeDirs(dir)
+for dir, l in zip(directories, lists):
+    for image, filename in l:
+        new_image_path = os.path.join(dir, filename)
+        copyfile(image, new_image_path)
 
-for image, filename in train_dogs:
-    new_image_path = os.path.join("./data/train/dogs", filename)
-    copyfile(image, new_image_path)
-
-for image, filename in val_cats:
-    new_image_path = os.path.join("./data/val/cats", filename)
-    copyfile(image, new_image_path)
-
-for image, filename in val_dogs:
-    new_image_path = os.path.join("./data/val/dogs", filename)
-    copyfile(image, new_image_path)
 
 
 
