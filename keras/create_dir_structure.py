@@ -21,7 +21,7 @@ val_cats = cat_images[1000:]
 train_dogs = dog_images[:1000]
 val_dogs = dog_images[1000:]
 
-directories = ['./data/train/cats', './data/train/dogs', './data/val/cats', './data/val/dogs']
+directories = ['./data/train/cats', './data/train/dogs', './data/validation/cats', './data/validation/dogs']
 lists = [train_cats, train_dogs, val_cats, val_dogs]
 for dir in directories:
     if not tf.gfile.Exists(dir):
