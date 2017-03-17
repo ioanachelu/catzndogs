@@ -1,9 +1,9 @@
 import tensorflow as tf
 
 # Basic model parameters.
-tf.app.flags.DEFINE_integer('checkpoint_every', 10,
+tf.app.flags.DEFINE_integer('checkpoint_every', 500,
                             """Checkpoint interval""")
-tf.app.flags.DEFINE_integer('summary_every', 10,
+tf.app.flags.DEFINE_integer('summary_every', 1000,
                             """Summary interval""")
 tf.app.flags.DEFINE_integer('test_summary_every', 1,
                             """Summary interval""")
