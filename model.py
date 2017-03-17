@@ -41,10 +41,9 @@ class CatznDogs(Network):
              .conv(3, 3, 512, 1, 1, name='conv5_2', layer_norm=self.layer_norm)
              .conv(3, 3, 512, 1, 1, name='conv5_3', layer_norm=self.layer_norm)
              .max_pool(2, 2, 2, 2, name='pool5')
-             .fc(4096, name="fc6", layer_norm=self.layer_norm)
+             .fc(256, name="fc6-catzndogs", weight_initializer=tf.contrib.layers.xavier_initializer(),
+                 bias_initializer=tf.zeros_initializer(), layer_norm=self.layer_norm)
              .dropout(0.5, name="drop6")
-             .fc(4096, name="fc7", layer_norm=self.layer_norm)
-             .dropout(0.5, name="drop7")
              .fc(2, name="cls_score", weight_initializer=tf.contrib.layers.xavier_initializer(),
                  bias_initializer=tf.zeros_initializer(), layer_norm=self.layer_norm)
              )
