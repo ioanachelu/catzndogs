@@ -1,14 +1,11 @@
-<<<<<<< HEAD
-
 =======
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
 # Byte-compiled / optimized / DLL files
->>>>>>> 84cfcd53d309f8388ef81dee4992a4f02c745c61
 __pycache__/
 *.py[cod]
 *$py.class
-
+keras/data/
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

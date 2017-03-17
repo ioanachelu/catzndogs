@@ -52,11 +52,13 @@ test_generator = test_datagen.flow_from_directory(
 paths = os.listdir('./data/test/unlabeled')
 submission = []
 for pred_count, batch in enumerate(test_generator):
+    if pred_count == 12500:
+        break;
     # img = np.asarray(batch[0], np.uint8)
     # img = Image.fromarray(img)
     predict = model.predict_on_batch(batch)
     # img.show()
-    id = os.path.basename(paths[pred_count])
+    id, ext = os.path.splitext(paths[pred_count])
     submission.append([id, 1 - predict[0][0]])
 
 import csv
