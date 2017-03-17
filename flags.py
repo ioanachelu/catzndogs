@@ -17,7 +17,7 @@ tf.app.flags.DEFINE_boolean('train', True,
                             """Whether to train or test""")
 tf.app.flags.DEFINE_string('checkpoint_dir', './models/',
                            """Directory where to read model checkpoints.""")
-tf.app.flags.DEFINE_integer('num_steps', 70000,
+tf.app.flags.DEFINE_integer('num_steps', 100000,
                             """Num of steps to train the network""")
 tf.app.flags.DEFINE_string('summaries_dir', './summaries/',
                            """Directory where to write event logs""")
