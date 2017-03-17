@@ -151,7 +151,7 @@ class CatznDogs(Network):
             print('step {:d} \t loss = {:.3f}, step_acc = {:.3f}, acc_exp_avg = {:.3f}, running_avg_acc = {:.3f}, ({:.3f} sec/step)'.format(
                         step_count, loss_value, step_acc_pred, step_avg_acc_pred, acc_pred,
                         duration))
-            print("labels vs pred {}".format(list(zip(labels, preds))))
+            # print("labels vs pred {}".format(list(zip(labels, preds))))
             step_count += 1
         coord.request_stop()
         coord.join(threads)
