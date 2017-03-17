@@ -11,10 +11,10 @@ img_width, img_height = 150, 150
 
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
-nb_train_samples = 2000
-nb_validation_samples = 800
+nb_train_samples = 20003
+nb_validation_samples = 12502
 epochs = 50
-batch_size = 16
+batch_size = 128
 
 # build the VGG16 network
 model = applications.VGG16(weights='imagenet', include_top=False)
