@@ -30,8 +30,7 @@ def save_bottlebeck_features():
         shuffle=False)
     bottleneck_features_train = model.predict_generator(
         generator, nb_train_samples // batch_size)
-    np.save(open('bottleneck_features_train.npy', 'w'),
-            bottleneck_features_train)
+    np.save('bottleneck_features_train.npy', bottleneck_features_train)
 
     generator = datagen.flow_from_directory(
         validation_data_dir,
@@ -41,16 +40,15 @@ def save_bottlebeck_features():
         shuffle=False)
     bottleneck_features_validation = model.predict_generator(
         generator, nb_validation_samples // batch_size)
-    np.save(open('bottleneck_features_validation.npy', 'w'),
-            bottleneck_features_validation)
+    np.save('bottleneck_features_validation.npy', bottleneck_features_validation)
 
 
 def train_top_model():
-    train_data = np.load(open('bottleneck_features_train.npy'))
+    train_data = np.load('bottleneck_features_train.npy')
     train_labels = np.array(
         [0] * (nb_train_samples / 2) + [1] * (nb_train_samples / 2))
 
-    validation_data = np.load(open('bottleneck_features_validation.npy'))
+    validation_data = np.load('bottleneck_features_validation.npy')
     validation_labels = np.array(
         [0] * (nb_validation_samples / 2) + [1] * (nb_validation_samples / 2))
 
