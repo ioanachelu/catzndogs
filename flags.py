@@ -9,7 +9,7 @@ tf.app.flags.DEFINE_integer('test_summary_every', 1,
                             """Summary interval""")
 tf.app.flags.DEFINE_string('GPU', "0",
                            """The GPU device to run on""")
-tf.app.flags.DEFINE_integer('batch_size', 16,
+tf.app.flags.DEFINE_integer('batch_size', 1,
                             """Number of images to process in a batch.""")
 tf.app.flags.DEFINE_boolean('resume', False,
                             """Resume training from latest checkpoint""")
@@ -29,7 +29,7 @@ tf.app.flags.DEFINE_string('test_dir', './train',
                            """Directory where the test dataset is""")
 tf.app.flags.DEFINE_string('pretrained_weights', './vgg16.npy',
                            """Path to where the pretrained  weights for VGG 16 reside""")
-tf.app.flags.DEFINE_float('lr', 0.001, """Learning rate""")
+tf.app.flags.DEFINE_float('lr', 0.0001, """Learning rate""")
 tf.app.flags.DEFINE_float('moving_average_decay', 0.9, """Moving average decay for loss""")
 tf.app.flags.DEFINE_integer('stepsize', 30000, """Learning rate num steps per decay""")
 tf.app.flags.DEFINE_float('gamma', 0.1, """Learning rate power for decay""")
