@@ -1,7 +1,7 @@
 from keras import applications
 from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
-from keras.models import Sequential
+from keras.models import Sequential, Model
 from keras.layers import Dropout, Flatten, Dense
 import numpy as np
 
@@ -21,20 +21,30 @@ batch_size = 128
 model = applications.VGG16(weights='imagenet', include_top=False)
 print('Model loaded.')
 
-# build a classifier model to put on top of the convolutional model
-top_model = Sequential()
-top_model.add(Flatten(input_shape=[4, 4, 512]))
-top_model.add(Dense(256, activation='relu'))
-top_model.add(Dropout(0.5))
-top_model.add(Dense(1, activation='sigmoid'))
+# # build a classifier model to put on top of the convolutional model
+# top_model = Sequential()
+# top_model.add(Flatten(input_shape=[4, 4, 512]))
+# top_model.add(Dense(256, activation='relu'))
+# top_model.add(Dropout(0.5))
+# top_model.add(Dense(1, activation='sigmoid'))
+#
+# # note that it is necessary to start with a fully-trained
+# # classifier, including the top classifier,
+# # in order to successfully do fine-tuning
+# top_model.load_weights(top_model_weights_path)
+#
+# # add the model on top of the convolutional base
+# model.add(top_model)
 
-# note that it is necessary to start with a fully-trained
-# classifier, including the top classifier,
-# in order to successfully do fine-tuning
+x = model.output
+x = Flatten(input_shape=[4, 4, 512])(x)
+x = Dense(256, activation='relu')(x)
+x = Dropout(0.5)(x)
+preds = Dense(1, activation='sigmoid')(x)
+
+top_model = Model(input=model.input, output=preds)
 top_model.load_weights(top_model_weights_path)
 
-# add the model on top of the convolutional base
-model.add(top_model)
 
 # set the first 25 layers (up to the last conv block)
 # to non-trainable (weights will not be updated)
