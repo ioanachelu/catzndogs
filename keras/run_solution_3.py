@@ -27,12 +27,17 @@ print('Model loaded.')
 # top_model.add(Dense(256, activation='relu'))
 # top_model.add(Dropout(0.5))
 # top_model.add(Dense(1, activation='sigmoid'))
-#
-# # note that it is necessary to start with a fully-trained
-# # classifier, including the top classifier,
-# # in order to successfully do fine-tuning
+# #
+# # # note that it is necessary to start with a fully-trained
+# # # classifier, including the top classifier,
+# # # in order to successfully do fine-tuning
 # top_model.load_weights(top_model_weights_path)
-#
+
+# weights = top_model.get_weights()
+
+# layer_dict = dict([(layer.name, layer) for layer in model.layers])
+# weights = layer_dict['some_name'].get_weights()
+
 # # add the model on top of the convolutional base
 # model.add(top_model)
 
@@ -43,7 +48,7 @@ x = Dropout(0.5)(x)
 preds = Dense(1, activation='sigmoid')(x)
 
 top_model = Model(input=model.input, output=preds)
-top_model.load_weights(top_model_weights_path)
+top_model.load_weights(top_model_weights_path, by_name=True)
 
 
 # set the first 25 layers (up to the last conv block)
