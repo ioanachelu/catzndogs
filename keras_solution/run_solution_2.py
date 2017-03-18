@@ -20,8 +20,8 @@ batch_size = 16
 
 
 def save_bottlebeck_features():
-    datagen = ImageDataGenerator()
-    # datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
+    datagen = ImageDataGenerator(rescale=1., featurewise_center=True)
+    datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
     # build the VGG16 network
     model = applications.VGG16(include_top=False, weights='imagenet')
