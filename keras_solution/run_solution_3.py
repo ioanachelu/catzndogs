@@ -59,7 +59,7 @@ for layer in top_model.layers[:14]:
 # compile the model with a SGD/momentum optimizer
 # and a very slow learning rate.
 top_model.compile(loss='binary_crossentropy',
-              optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
+              optimizer=optimizers.SGD(lr=5e-5, momentum=0.9),
               metrics=['accuracy'])
 
 # prepare data augmentation configuration
