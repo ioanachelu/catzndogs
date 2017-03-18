@@ -3,6 +3,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
 from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
+import numpy as np
 
 # path to the model weights files.
 top_model_weights_path = 'bottleneck_fc_model.h5'
@@ -47,13 +48,21 @@ model.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 # prepare data augmentation configuration
+# train_datagen = ImageDataGenerator(
+#     rescale=1. / 255,
+#     shear_range=0.2,
+#     zoom_range=0.2,
+#     horizontal_flip=True)
 train_datagen = ImageDataGenerator(
-    rescale=1. / 255,
+    rescale=1.,
+    featurewise_center=True,
     shear_range=0.2,
     zoom_range=0.2,
     horizontal_flip=True)
+train_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
-test_datagen = ImageDataGenerator(rescale=1. / 255)
+test_datagen = ImageDataGenerator(rescale=1., featurewise_center=True)
+test_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
 train_generator = train_datagen.flow_from_directory(
     train_data_dir,

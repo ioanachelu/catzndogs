@@ -3,7 +3,7 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras import backend as K
-
+import numpy as np
 
 # dimensions of our images.
 img_width, img_height = 150, 150
@@ -45,15 +45,24 @@ model.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 # this is the augmentation configuration we will use for training
+# train_datagen = ImageDataGenerator(
+#     rescale=1. / 255,
+#     shear_range=0.2,
+#     zoom_range=0.2,
+#     horizontal_flip=True)
 train_datagen = ImageDataGenerator(
-    rescale=1. / 255,
+    rescale=1.,
+    featurewise_center=True,
     shear_range=0.2,
     zoom_range=0.2,
     horizontal_flip=True)
+train_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
 # this is the augmentation configuration we will use for testing:
 # only rescaling
-test_datagen = ImageDataGenerator(rescale=1. / 255)
+# test_datagen = ImageDataGenerator(rescale=1. / 255)
+test_datagen = ImageDataGenerator(rescale=1., featurewise_center=True)
+test_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
 train_generator = train_datagen.flow_from_directory(
     train_data_dir,
