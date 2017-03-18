@@ -7,6 +7,7 @@ import numpy as np
 from PIL import Image
 import os
 from keras import applications
+import tensorflow as tf
 
 # dimensions of our images.
 img_width, img_height = 150, 150
@@ -32,8 +33,12 @@ paths = os.listdir('./data/test/unlabeled')
 # build the VGG16 network
 model = applications.VGG16(include_top=False, weights='imagenet')
 
-bottleneck_features_test = model.predict_generator(
-    test_generator, 12500)
+if not tf.gfile.Exists('./models/bottleneck_features_test.npy'):
+    bottleneck_features_test = model.predict_generator(
+        test_generator, 12500)
+    np.save('./models/bottleneck_features_test.npy', bottleneck_features_test)
+else:
+    bottleneck_features_test = np.load('./models/bottleneck_features_test.npy')
 
 model = Sequential()
 model.add(Flatten(input_shape=bottleneck_features_test.shape[1:]))
