@@ -17,8 +17,6 @@ epochs = 50
 batch_size = 16
 
 
-
-
 def save_bottlebeck_features():
     datagen = ImageDataGenerator(rescale=1., featurewise_center=True)
     datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
@@ -34,7 +32,7 @@ def save_bottlebeck_features():
         shuffle=False)
 
     bottleneck_features_train = model.predict_generator(
-        generator, nb_train_samples // batch_size)
+        generator, nb_train_samples)
     np.save('./models/bottleneck_features_train.npy', bottleneck_features_train)
 
     generator = datagen.flow_from_directory(
@@ -44,7 +42,7 @@ def save_bottlebeck_features():
         class_mode=None,
         shuffle=False)
     bottleneck_features_validation = model.predict_generator(
-        generator, nb_validation_samples // batch_size)
+        generator, nb_validation_samples)
     np.save('./models/bottleneck_features_validation.npy', bottleneck_features_validation)
 
 
