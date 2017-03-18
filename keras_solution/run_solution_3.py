@@ -47,7 +47,7 @@ x = Dense(256, activation='relu')(x)
 x = Dropout(0.5)(x)
 preds = Dense(1, activation='sigmoid')(x)
 
-top_model = Model(inputs=model.input, outputs=preds, input_shape=(150, 150, 3), output_shape=(1,))
+top_model = Model(inputs=model.input, outputs=preds, input_shape=(150, 150, 3))
 top_model.load_weights(top_model_weights_path, by_name=True)
 
 
