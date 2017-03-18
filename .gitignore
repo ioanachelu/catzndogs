@@ -5,7 +5,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-keras/data/
+keras_solution/data/
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -69,9 +69,9 @@ sample_submission.csv%3Fsv%3D2015-12-11%26sr%3Db%26sig%3D%2BGeakpd09sqb%2FNYoNsD
 .DS_Store
 .idea/
 vgg16.npy
-keras/data
-keras/models
-keras/submission.csv
+keras_solution/data
+keras_solution/models
+keras_solution/submission.csv
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

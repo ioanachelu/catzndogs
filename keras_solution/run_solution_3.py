@@ -47,18 +47,18 @@ x = Dense(256, activation='relu')(x)
 x = Dropout(0.5)(x)
 preds = Dense(1, activation='sigmoid')(x)
 
-top_model = Model(input=model.input, output=preds)
+top_model = Model(inputs=model.input, outputs=preds, input_shape=(150, 150, 3), output_shape=(1,))
 top_model.load_weights(top_model_weights_path, by_name=True)
 
 
 # set the first 25 layers (up to the last conv block)
 # to non-trainable (weights will not be updated)
-for layer in model.layers[:25]:
+for layer in model.layers[:14]:
     layer.trainable = False
 
 # compile the model with a SGD/momentum optimizer
 # and a very slow learning rate.
-model.compile(loss='binary_crossentropy',
+top_model.compile(loss='binary_crossentropy',
               optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
               metrics=['accuracy'])
 
@@ -92,11 +92,11 @@ validation_generator = test_datagen.flow_from_directory(
     class_mode='binary')
 
 # fine-tune the model
-model.fit_generator(
+top_model.fit_generator(
     train_generator,
-    samples_per_epoch=nb_train_samples,
+    steps_per_epoch=nb_train_samples,
     epochs=epochs,
-    validation_data=validation_generator,
+    validation_steps=validation_generator,
     nb_val_samples=nb_validation_samples)
 
-model.save_weights('./models/third_try.h5')
+top_model.save_weights('./models/third_try.h5')
