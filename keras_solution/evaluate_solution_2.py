@@ -67,7 +67,7 @@ for pred_count in range(bottleneck_features_test.shape[0]):
     predict = model.predict_on_batch(batch)
     # img.show()
     # print(1 - predict[0][0])
-    id, ext = os.path.splitext(paths[pred_count])
+    id, ext = os.path.splitext(os.path.basename(paths[pred_count]))
     submission.append([id, 1 - predict[0][0]])
 
 import csv
