@@ -6,6 +6,7 @@ from keras.layers import Dropout, Flatten, Dense, ZeroPadding2D, Convolution2D, 
 import numpy as np
 import os
 import h5py
+from keras.utils.conv_utils import convert_kernel
 
 # path to the model weights files.
 top_model_weights_path = './models/bottleneck_fc_model.h5'
@@ -22,57 +23,47 @@ batch_size = 128
 
 # build the VGG16 network
 model = Sequential()
-model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
+model.add(Convolution2D(64, (3, 3), activation='relu', padding='same', name='block1_conv1', input_shape=(img_width, img_height, 3)))
+model.add(Convolution2D(64, (3, 3), activation='relu', padding='same', name='block1_conv2'))
+model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool'))
 
-model.add(Convolution2D(3, 3, 64, activation='relu', name='conv1_1'))
-model.add(ZeroPadding2D((1, 1)))
-model.add(Convolution2D(3, 3, 64, activation='relu', name='conv1_2'))
-model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+model.add(Convolution2D(128, (3, 3), activation='relu', padding='same', name='block2_conv1'))
+model.add(Convolution2D(128, (3, 3), activation='relu', padding='same', name='block2_conv2'))
+model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool'))
 
-model.add(ZeroPadding2D((1, 1)))
-model.add(Convolution2D(3, 3, 128, activation='relu', name='conv2_1'))
-model.add(ZeroPadding2D((1, 1)))
-model.add(Convolution2D(3, 3, 128, activation='relu', name='conv2_2'))
-model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+model.add(Convolution2D(256, (3, 3), activation='relu', padding='same', name='block3_conv1'))
+model.add(Convolution2D(256, (3, 3), activation='relu', padding='same', name='block3_conv2'))
+model.add(Convolution2D(256, (3, 3), activation='relu', padding='same', name='block3_conv3'))
+model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool'))
 
-model.add(ZeroPadding2D((1, 1)))
-model.add(Convolution2D(3, 3, 256, activation='relu', name='conv3_1'))
-model.add(ZeroPadding2D((1, 1)))
-model.add(Convolution2D(3, 3, 256, activation='relu', name='conv3_2'))
-model.add(ZeroPadding2D((1, 1)))
-model.add(Convolution2D(3, 3, 256, activation='relu', name='conv3_3'))
-model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+model.add(Convolution2D(512, (3, 3), activation='relu', padding='same', name='block4_conv1'))
+model.add(Convolution2D(512, (3, 3), activation='relu', padding='same', name='block4_conv2'))
+model.add(Convolution2D(512, (3, 3), activation='relu', padding='same', name='block4_conv3'))
+model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool'))
 
-model.add(ZeroPadding2D((1, 1)))
-model.add(Convolution2D(3, 3, 512, activation='relu', name='conv4_1'))
-model.add(ZeroPadding2D((1, 1)))
-model.add(Convolution2D(3, 3, 512, activation='relu', name='conv4_2'))
-model.add(ZeroPadding2D((1, 1)))
-model.add(Convolution2D(3, 3, 512, activation='relu', name='conv4_3'))
-model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-
-model.add(ZeroPadding2D((1, 1)))
-model.add(Convolution2D(3, 3, 512, activation='relu', name='conv5_1'))
-model.add(ZeroPadding2D((1, 1)))
-model.add(Convolution2D(3, 3, 512, activation='relu', name='conv5_2'))
-model.add(ZeroPadding2D((1, 1)))
-model.add(Convolution2D(3, 3, 512, activation='relu', name='conv5_3'))
-model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+model.add(Convolution2D(512, (3, 3), activation='relu', padding='same', name='block5_conv1'))
+model.add(Convolution2D(512, (3, 3), activation='relu', padding='same', name='block5_conv2'))
+model.add(Convolution2D(512, (3, 3), activation='relu', padding='same', name='block5_conv3'))
+model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool'))
 
 # load the weights of the VGG16 networks
 # (trained on ImageNet, won the ILSVRC competition in 2014)
 # note: when there is a complete match between your model definition
 # and your weight savefile, you can simply call model.load_weights(filename)
-assert os.path.exists(weights_path), 'Model weights not found (see "weights_path" variable in script).'
-f = h5py.File(weights_path)
-for k in range(f.attrs['nb_layers']):
-    if k >= len(model.layers):
-        # we don't look at the last (fully-connected) layers in the savefile
-        break
-    g = f['layer_{}'.format(k)]
-    weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
-    model.layers[k].set_weights(weights)
-f.close()
+# assert os.path.exists(weights_path), 'Model weights not found (see "weights_path" variable in script).'
+# f = h5py.File(weights_path)
+# for k in range(f.attrs['nb_layers']):
+#     if k >= len(model.layers):
+#         # we don't look at the last (fully-connected) layers in the savefile
+#         break
+#     g = f['layer_{}'.format(k)]
+#     weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
+#     if len(weights) > 0:
+#         converted_w = convert_kernel(weights)
+#         model.layers[k].set_weights(converted_w)
+# f.close()
+weights_path = './vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
+model.load_weights(weights_path)
 print('Model loaded.')
 
 # # build a classifier model to put on top of the convolutional model
@@ -97,7 +88,7 @@ for layer in top_model.layers[:14]:
 
 # compile the model with a SGD/momentum optimizer
 # and a very slow learning rate.
-top_model.compile(loss='binary_crossentropy',
+model.compile(loss='binary_crossentropy',
               optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
               metrics=['accuracy'])
 
@@ -126,11 +117,11 @@ validation_generator = test_datagen.flow_from_directory(
     class_mode='binary')
 
 # fine-tune the model
-top_model.fit_generator(
+model.fit_generator(
     train_generator,
     steps_per_epoch=nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
     validation_steps=nb_validation_samples)
 
-top_model.save_weights('./models/forth_try.h5')
+model.save_weights('./models/forth_try.h5')
