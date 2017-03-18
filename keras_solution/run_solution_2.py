@@ -56,7 +56,7 @@ def train_top_model():
         if os.path.isdir(os.path.join(train_data_dir, dir)) and not dir.startswith("."):
             paths.extend(os.listdir(os.path.join(train_data_dir, dir)))
     paths = sorted(paths)
-    paths = paths[(nb_train_samples // batch_size) * batch_size]
+    paths = paths[:(nb_train_samples // batch_size) * batch_size]
     train_labels = [0 if "cat" in p else 1 for p in paths]
 
     validation_data = np.load('./models/bottleneck_features_validation.npy')
@@ -66,7 +66,7 @@ def train_top_model():
         if os.path.isdir(os.path.join(validation_data_dir, dir)) and not dir.startswith("."):
             paths.extend(os.listdir(os.path.join(validation_data_dir, dir)))
     paths = sorted(paths)
-    paths = paths[(nb_validation_samples // batch_size) * batch_size]
+    paths = paths[:(nb_validation_samples // batch_size) * batch_size]
     validation_labels = [0 if "cat" in p else 1 for p in paths]
 
     model = Sequential()
@@ -85,5 +85,5 @@ def train_top_model():
     model.save_weights(top_model_weights_path)
 
 
-save_bottlebeck_features()
+# save_bottlebeck_features()
 train_top_model()
