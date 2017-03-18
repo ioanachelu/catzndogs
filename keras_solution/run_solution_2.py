@@ -3,6 +3,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
 from keras import applications
+import os
 
 # dimensions of our images.
 img_width, img_height = 150, 150
@@ -14,6 +15,8 @@ nb_train_samples = 20000
 nb_validation_samples = 5000
 epochs = 50
 batch_size = 16
+
+
 
 
 def save_bottlebeck_features():
@@ -47,12 +50,24 @@ def save_bottlebeck_features():
 
 def train_top_model():
     train_data = np.load('./models/bottleneck_features_train.npy')
-    train_labels = np.array(
-        [0] * int(nb_train_samples / 2) + [1] * int((nb_train_samples // batch_size) * batch_size - int(nb_train_samples / 2)))
+    dirs = os.listdir(train_data_dir)
+    paths = []
+    for dir in dirs:
+        if os.path.isdir(os.path.join(train_data_dir, dir)) and not dir.startswith("."):
+            paths.extend(os.listdir(os.path.join(train_data_dir, dir)))
+    paths = sorted(paths)
+    paths = paths[(nb_train_samples // batch_size) * batch_size]
+    train_labels = [0 if "cat" in p else 1 for p in paths]
 
     validation_data = np.load('./models/bottleneck_features_validation.npy')
-    validation_labels = np.array(
-        [0] * int(nb_validation_samples / 2) + [1] * int((nb_validation_samples // batch_size) * batch_size - int(nb_validation_samples / 2)))
+    dirs = os.listdir(validation_data_dir)
+    paths = []
+    for dir in dirs:
+        if os.path.isdir(os.path.join(validation_data_dir, dir)) and not dir.startswith("."):
+            paths.extend(os.listdir(os.path.join(validation_data_dir, dir)))
+    paths = sorted(paths)
+    paths = paths[(nb_validation_samples // batch_size) * batch_size]
+    validation_labels = [0 if "cat" in p else 1 for p in paths]
 
     model = Sequential()
     model.add(Flatten(input_shape=train_data.shape[1:]))
