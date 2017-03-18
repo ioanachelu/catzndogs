@@ -53,7 +53,7 @@ top_model.load_weights(top_model_weights_path, by_name=True)
 
 # set the first 25 layers (up to the last conv block)
 # to non-trainable (weights will not be updated)
-for layer in model.layers[:25]:
+for layer in model.layers[:14]:
     layer.trainable = False
 
 # compile the model with a SGD/momentum optimizer
