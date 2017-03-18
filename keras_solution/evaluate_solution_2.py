@@ -13,6 +13,7 @@ import tensorflow as tf
 img_width, img_height = 150, 150
 batch_size = 1
 top_model_weights_path = './models/bottleneck_fc_model.h5'
+bottleneck_features ='./models/bottleneck_features_test.npy'
 test_data_dir = './data/test'
 
 if K.image_data_format() == 'channels_first':
@@ -28,17 +29,26 @@ test_generator = test_datagen.flow_from_directory(
     classes=None,
     class_mode=None,
     shuffle=False)
-paths = os.listdir('./data/test/unlabeled')
-
+dirs = os.listdir(test_data_dir)
+paths = []
+for dir in dirs:
+    if os.path.isdir(os.path.join(test_data_dir, dir)) and not dir.startswith("."):
+        paths.extend(os.listdir(os.path.join(test_data_dir, dir)))
+paths = sorted(paths)
+if "test" in test_data_dir:
+    paths = [os.path.join("unlabeled", p) for p in paths]
+else:
+    paths = [os.path.join("cats", p) if "cat" in p else os.path.join("dogs", p) for p in paths]
+paths = [os.path.join(test_data_dir, p) for p in paths]
 # build the VGG16 network
 model = applications.VGG16(include_top=False, weights='imagenet')
 
-if not tf.gfile.Exists('./models/bottleneck_features_test.npy'):
+if not tf.gfile.Exists(bottleneck_features):
     bottleneck_features_test = model.predict_generator(
         test_generator, 12500)
-    np.save('./models/bottleneck_features_test.npy', bottleneck_features_test)
+    np.save(bottleneck_features, bottleneck_features_test)
 else:
-    bottleneck_features_test = np.load('./models/bottleneck_features_test.npy')
+    bottleneck_features_test = np.load(bottleneck_features)
 
 model = Sequential()
 model.add(Flatten(input_shape=bottleneck_features_test.shape[1:]))
@@ -49,19 +59,19 @@ model.add(Dense(1, activation='sigmoid'))
 model.load_weights(top_model_weights_path)
 
 submission = []
-for pred_count, batch in enumerate(bottleneck_features_test):
+for pred_count in range(bottleneck_features_test.shape[0]):
     if pred_count == 12500:
         break
-    img = np.asarray(batch[0], np.uint8)
-    img = Image.fromarray(img)
+    batch = np.expand_dims(bottleneck_features_test[pred_count], axis=0)
+    # img = Image.open(paths[pred_count])
     predict = model.predict_on_batch(batch)
-    img.show()
-    print(1 - predict[0][0])
+    # img.show()
+    # print(1 - predict[0][0])
     id, ext = os.path.splitext(paths[pred_count])
     submission.append([id, 1 - predict[0][0]])
 
 import csv
-with open('submission.csv', 'w') as csvfile:
+with open('submission_2.csv', 'w') as csvfile:
     fieldnames = ['id', 'label']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
