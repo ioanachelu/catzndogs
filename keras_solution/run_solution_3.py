@@ -94,9 +94,9 @@ validation_generator = test_datagen.flow_from_directory(
 # fine-tune the model
 top_model.fit_generator(
     train_generator,
-    steps_per_epoch=nb_train_samples,
+    steps_per_epoch=nb_train_samples // batch_size,
     epochs=epochs,
-    validation_steps=validation_generator,
-    nb_val_samples=nb_validation_samples)
+    validation_data=validation_generator,
+    validation_steps=nb_validation_samples)
 
 top_model.save_weights('./models/third_try.h5')
