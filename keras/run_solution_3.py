@@ -18,7 +18,7 @@ epochs = 50
 batch_size = 128
 
 # build the VGG16 network
-model = applications.VGG16(weights='imagenet', include_top=False)
+model = applications.VGG16(input_shape=(150, 150, 3), weights='imagenet', include_top=False)
 print('Model loaded.')
 
 # # build a classifier model to put on top of the convolutional model
@@ -37,7 +37,7 @@ print('Model loaded.')
 # model.add(top_model)
 
 x = model.output
-x = Flatten(input_shape=[4, 4, 512])(x)
+x = Flatten(input_shape=model.output_shape[1:])(x)
 x = Dense(256, activation='relu')(x)
 x = Dropout(0.5)(x)
 preds = Dense(1, activation='sigmoid')(x)
