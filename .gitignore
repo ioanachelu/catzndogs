@@ -50,7 +50,7 @@ qmodnet.zip
 qmodnet/
 summaries_prev_exp/
 test_ioana_1/
-
+keras_solution/data/*
 roi_pooling_layer/__pycache__/
 roi_pooling_layer/roi_pooling.so
 roi_pooling_layer/roi_pooling_op.cu.o
@@ -72,7 +72,7 @@ vgg16.npy
 keras_solution/data
 keras_solution/models
 keras_solution/submission.csv
-
+submission.csv
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
