@@ -23,7 +23,7 @@ print('Model loaded.')
 
 # # build a classifier model to put on top of the convolutional model
 # top_model = Sequential()
-# top_model.add(Flatten(input_shape=[4, 4, 512]))
+# top_model.add(Flatten(input_shape=model.output_shape[1:]))
 # top_model.add(Dense(256, activation='relu'))
 # top_model.add(Dropout(0.5))
 # top_model.add(Dense(1, activation='sigmoid'))
@@ -33,7 +33,7 @@ print('Model loaded.')
 # # # in order to successfully do fine-tuning
 # top_model.load_weights(top_model_weights_path)
 
-# weights = top_model.get_weights()
+# top_model_weights_weights = top_model.get_weights()
 
 # layer_dict = dict([(layer.name, layer) for layer in model.layers])
 # weights = layer_dict['some_name'].get_weights()
@@ -53,7 +53,7 @@ top_model.load_weights(top_model_weights_path, by_name=True)
 
 # set the first 25 layers (up to the last conv block)
 # to non-trainable (weights will not be updated)
-for layer in model.layers[:14]:
+for layer in top_model.layers[:14]:
     layer.trainable = False
 
 # compile the model with a SGD/momentum optimizer
