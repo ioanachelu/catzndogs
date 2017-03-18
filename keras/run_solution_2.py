@@ -7,7 +7,7 @@ from keras import applications
 # dimensions of our images.
 img_width, img_height = 150, 150
 
-top_model_weights_path = 'bottleneck_fc_model.h5'
+top_model_weights_path = './models/bottleneck_fc_model.h5'
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
 nb_train_samples = 20000
@@ -32,7 +32,7 @@ def save_bottlebeck_features():
 
     bottleneck_features_train = model.predict_generator(
         generator, nb_train_samples // batch_size)
-    np.save('bottleneck_features_train.npy', bottleneck_features_train)
+    np.save('./models/bottleneck_features_train.npy', bottleneck_features_train)
 
     generator = datagen.flow_from_directory(
         validation_data_dir,
@@ -42,15 +42,15 @@ def save_bottlebeck_features():
         shuffle=False)
     bottleneck_features_validation = model.predict_generator(
         generator, nb_validation_samples // batch_size)
-    np.save('bottleneck_features_validation.npy', bottleneck_features_validation)
+    np.save('./models/bottleneck_features_validation.npy', bottleneck_features_validation)
 
 
 def train_top_model():
-    train_data = np.load('bottleneck_features_train.npy')
+    train_data = np.load('./models/bottleneck_features_train.npy')
     train_labels = np.array(
         [1] * int(nb_train_samples / 2) + [0] * int((nb_train_samples // batch_size) * batch_size -  int(nb_train_samples / 2)))
 
-    validation_data = np.load('bottleneck_features_validation.npy')
+    validation_data = np.load('./models/bottleneck_features_validation.npy')
     validation_labels = np.array(
         [1] * int(nb_validation_samples / 2) + [0] * int((nb_validation_samples // batch_size) * batch_size -  int(nb_validation_samples / 2)))
 

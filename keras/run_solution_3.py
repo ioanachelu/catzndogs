@@ -6,7 +6,7 @@ from keras.layers import Dropout, Flatten, Dense
 import numpy as np
 
 # path to the model weights files.
-top_model_weights_path = 'bottleneck_fc_model.h5'
+top_model_weights_path = './models/bottleneck_fc_model.h5'
 # dimensions of our images.
 img_width, img_height = 150, 150
 
@@ -83,3 +83,5 @@ model.fit_generator(
     epochs=epochs,
     validation_data=validation_generator,
     nb_val_samples=nb_validation_samples)
+
+model.save_weights('./models/third_try.h5')
