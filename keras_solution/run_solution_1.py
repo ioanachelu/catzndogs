@@ -6,7 +6,7 @@ from keras import backend as K
 import numpy as np
 
 # dimensions of our images.
-img_width, img_height = 224, 224
+img_width, img_height = 150, 150
 
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
