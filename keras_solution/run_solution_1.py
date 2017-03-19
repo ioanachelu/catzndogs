@@ -6,7 +6,7 @@ from keras import backend as K
 import numpy as np
 
 # dimensions of our images.
-img_width, img_height = 150, 150
+img_width, img_height = 224, 224
 
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
@@ -20,15 +20,15 @@ input_shape = (img_width, img_height, 3)
 
 model = Sequential()
 model.add(Conv2D(32, (3, 3), input_shape=input_shape))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
 model.add(Conv2D(32, (3, 3)))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
 model.add(Conv2D(64, (3, 3)))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
 model.add(Flatten())
