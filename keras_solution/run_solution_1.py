@@ -39,7 +39,7 @@ model.add(Dense(1))
 model.add(Activation('sigmoid'))
 
 model.compile(loss='binary_crossentropy',
-              optimizer='rmsprop',
+              optimizer='adam',
               metrics=['accuracy'])
 
 # this is the augmentation configuration we will use for training
