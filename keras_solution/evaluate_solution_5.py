@@ -47,12 +47,12 @@ test_generator = test_datagen.flow_from_directory(test_data_dir,
 
 # Calculate class posteriors probabilities
 y_probabilities = model.predict_generator(test_generator,
-                                          steps=12500 // batch_size)
-y_probabilities = [1 - p[0] for p in y_probabilities]
+                                          steps=12500)
+y_probabilities = [p[0] for p in y_probabilities]
 # Calculate class labels
 
 filenames = [filename.split('/')[1] for filename in test_generator.filenames]
-ids = [filename.split('.')[0] for filename in filenames]
+ids = [int(filename.split('.')[0]) for filename in filenames]
 
 submission = list(zip(ids, y_probabilities))
 submission.sort(key=lambda t: t[0])
