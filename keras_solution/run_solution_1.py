@@ -53,11 +53,7 @@ train_datagen = ImageDataGenerator(
     featurewise_center=True,
     shear_range=0.2,
     zoom_range=0.2,
-    horizontal_flip=True,
-    rotation_range=40,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
-    fill_mode='nearest'
+    horizontal_flip=True
 )
 train_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
