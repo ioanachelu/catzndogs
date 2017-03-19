@@ -56,7 +56,7 @@ filenames = [filename.split('/')[1] for filename in test_generator.filenames]
 ids = [filename.split('.')[0] for filename in filenames]
 
 submission = list(zip(ids, y_probabilities))
-submission = sorted(submission, key=submission[0])
+submission.sort(key=lambda t: t[0])
 
 # save results as a csv file in the specified results directory
 with open(results_name, 'w') as file:
