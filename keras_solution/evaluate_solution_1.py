@@ -13,10 +13,7 @@ batch_size = 1
 
 test_data_dir = './data/test'
 
-if K.image_data_format() == 'channels_first':
-    input_shape = (3, img_width, img_height)
-else:
-    input_shape = (img_width, img_height, 3)
+input_shape = (img_width, img_height, 3)
 
 model = Sequential()
 model.add(Conv2D(32, (3, 3), input_shape=input_shape))
@@ -40,7 +37,9 @@ model.add(Activation('sigmoid'))
 
 model.load_weights("./models/first_try.h5")
 
-test_datagen = ImageDataGenerator()
+test_datagen = ImageDataGenerator(rescale=1.,
+    featurewise_center=True)
+test_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 test_generator = test_datagen.flow_from_directory(
     test_data_dir,
     target_size=(img_width, img_height),
@@ -62,7 +61,7 @@ for pred_count, batch in enumerate(test_generator):
     submission.append([id, 1 - predict[0][0]])
 
 import csv
-with open('submission.csv', 'w') as csvfile:
+with open('submission_1_v2.csv', 'w') as csvfile:
     fieldnames = ['id', 'label']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
