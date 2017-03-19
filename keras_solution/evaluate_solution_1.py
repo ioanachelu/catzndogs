@@ -37,9 +37,7 @@ model.add(Activation('sigmoid'))
 
 model.load_weights("./models/first_try.h5")
 
-test_datagen = ImageDataGenerator(rescale=1.,
-    featurewise_center=True)
-test_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
+test_datagen = ImageDataGenerator()
 test_generator = test_datagen.flow_from_directory(
     test_data_dir,
     target_size=(img_width, img_height),
