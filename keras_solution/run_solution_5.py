@@ -27,6 +27,8 @@ validation_data_dir = 'data/validation'
 top_model_weights_path = './models/top_model_weights_inception.h5'
 final_model_weights_path = './models/model_weights_inception.h5'
 model_path = './models/model_inception.json'
+nb_train_samples = 20000
+nb_validation_samples = 5000
 
 # Pre-Trained CNN Model using imagenet dataset for pre-trained weights
 base_model = Xception(input_shape=(img_width, img_height, 3), weights='imagenet', include_top=False)
@@ -80,10 +82,10 @@ callbacks_list = [
 
 # Train Simple CNN
 model.fit_generator(train_generator,
-                    samples_per_epoch=train_generator.nb_sample,
+                    samples_per_epoch=nb_train_samples // nb_epoch,
                     nb_epoch=nb_epoch / 5,
                     validation_data=validation_generator,
-                    nb_val_samples=validation_generator.nb_sample,
+                    nb_val_samples=nb_validation_samples // nb_epoch,
                     callbacks=callbacks_list)
 
 # verbose
@@ -119,10 +121,10 @@ callbacks_list = [
 
 # fine-tune the model
 model.fit_generator(train_generator,
-                    samples_per_epoch=train_generator.nb_sample,
+                    samples_per_epoch=nb_train_samples // nb_epoch,
                     nb_epoch=nb_epoch,
                     validation_data=validation_generator,
-                    nb_val_samples=validation_generator.nb_sample,
+                    nb_val_samples=nb_validation_samples // nb_epoch,
                     callbacks=callbacks_list)
 
 # save model
