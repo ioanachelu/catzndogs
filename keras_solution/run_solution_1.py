@@ -6,7 +6,7 @@ from keras import backend as K
 import numpy as np
 
 # dimensions of our images.
-img_width, img_height = 150, 150
+img_width, img_height = 224, 224
 
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
@@ -15,10 +15,8 @@ nb_validation_samples = 5000
 epochs = 50
 batch_size = 128
 
-if K.image_data_format() == 'channels_first':
-    input_shape = (3, img_width, img_height)
-else:
-    input_shape = (img_width, img_height, 3)
+
+input_shape = (img_width, img_height, 3)
 
 model = Sequential()
 model.add(Conv2D(32, (3, 3), input_shape=input_shape))
@@ -55,7 +53,12 @@ train_datagen = ImageDataGenerator(
     featurewise_center=True,
     shear_range=0.2,
     zoom_range=0.2,
-    horizontal_flip=True)
+    horizontal_flip=True,
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    fill_mode='nearest'
+)
 train_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
 # this is the augmentation configuration we will use for testing:
