@@ -14,9 +14,8 @@ np.random.seed(seed=seed)
 tf.set_random_seed(seed=seed)
 
 # hyper parameters for model
-nb_classes = 2  # number of classes
 based_model_last_block_layer_number = 126  # value is based on based model selected.
-img_width, img_height = 150, 150  # change based on the shape/structure of your images
+img_width, img_height = 229, 229  # change based on the shape/structure of your images
 batch_size = 32  # try 4, 8, 16, 32, 64, 128, 256 dependent on CPU/GPU memory capacity (powers of 2 values).
 nb_epoch = 50  # number of iteration the algorithm gets trained.
 learn_rate = 1e-4  # sgd learning rate
@@ -36,7 +35,7 @@ base_model = Xception(input_shape=(img_width, img_height, 3), weights='imagenet'
 # Top Model Block
 x = base_model.output
 x = GlobalAveragePooling2D()(x)
-predictions = Dense(nb_classes, activation='softmax')(x)
+predictions = Dense(1, activation='sigmoid')(x)
 
 # add your top layer block to your base model
 model = Model(base_model.input, predictions)
