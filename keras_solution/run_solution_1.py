@@ -3,6 +3,7 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras import backend as K
+from keras import optimizers
 import numpy as np
 
 # dimensions of our images.
@@ -39,7 +40,7 @@ model.add(Dense(1))
 model.add(Activation('sigmoid'))
 
 model.compile(loss='binary_crossentropy',
-              optimizer='rmsprop',
+              optimizer=optimizers.Nadam(lr=0.001),
               metrics=['accuracy'])
 
 # this is the augmentation configuration we will use for training
