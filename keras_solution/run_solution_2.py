@@ -32,7 +32,7 @@ def save_bottlebeck_features():
         shuffle=False)
 
     bottleneck_features_train = model.predict_generator(
-        generator, nb_train_samples)
+        generator, nb_train_samples // batch_size)
     np.save('./models/bottleneck_features_train.npy', bottleneck_features_train)
 
     generator = datagen.flow_from_directory(
@@ -42,7 +42,7 @@ def save_bottlebeck_features():
         class_mode=None,
         shuffle=False)
     bottleneck_features_validation = model.predict_generator(
-        generator, nb_validation_samples)
+        generator, nb_validation_samples // batch_size)
     np.save('./models/bottleneck_features_validation.npy', bottleneck_features_validation)
 
 
@@ -83,5 +83,5 @@ def train_top_model():
     model.save_weights(top_model_weights_path)
 
 
-# save_bottlebeck_features()
+save_bottlebeck_features()
 train_top_model()
