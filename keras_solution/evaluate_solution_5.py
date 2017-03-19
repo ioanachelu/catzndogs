@@ -17,7 +17,7 @@ tf.set_random_seed(seed=seed)
 # hyper parameters for model
 based_model_last_block_layer_number = 126  # value is based on based model selected.
 img_width, img_height = 229, 229  # change based on the shape/structure of your images
-batch_size = 32  # try 4, 8, 16, 32, 64, 128, 256 dependent on CPU/GPU memory capacity (powers of 2 values).
+batch_size = 1  # try 4, 8, 16, 32, 64, 128, 256 dependent on CPU/GPU memory capacity (powers of 2 values).
 nb_epoch = 50  # number of iteration the algorithm gets trained.
 learn_rate = 1e-4  # sgd learning rate
 momentum = .9  # sgd momentum to avoid local minimum
@@ -48,13 +48,18 @@ test_generator = test_datagen.flow_from_directory(test_data_dir,
 # Calculate class posteriors probabilities
 y_probabilities = model.predict_generator(test_generator,
                                           steps=12500 // batch_size)
+y_probabilities = y_probabilities[:][0]
+y_probabilities = 1 - y_probabilities
 # Calculate class labels
 
 filenames = [filename.split('/')[1] for filename in test_generator.filenames]
 ids = [filename.split('.')[0] for filename in filenames]
 
+submission = list(zip(ids, y_probabilities))
+submission = sorted(submission, key=submission[0])
+
 # save results as a csv file in the specified results directory
 with open(results_name, 'w') as file:
     writer = csv.writer(file)
     writer.writerow(('id', 'label'))
-    writer.writerows(zip(ids, (1 - y_probabilities)))
+    writer.writerows(submission)
