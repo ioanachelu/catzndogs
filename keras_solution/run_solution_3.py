@@ -15,7 +15,7 @@ validation_data_dir = 'data/validation'
 nb_train_samples = 20000
 nb_validation_samples = 5000
 epochs = 50
-batch_size = 128
+batch_size = 16
 
 # build the VGG16 network
 model = applications.VGG16(input_shape=(150, 150, 3), weights='imagenet', include_top=False)

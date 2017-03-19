@@ -3,6 +3,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
 from keras import applications
+from keras.applications.vgg16 import preprocess_input
 import os
 
 # dimensions of our images.
@@ -18,8 +19,7 @@ batch_size = 16
 
 
 def save_bottlebeck_features():
-    datagen = ImageDataGenerator(rescale=1., featurewise_center=True)
-    datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
+    datagen = ImageDataGenerator()
 
     # build the VGG16 network
     model = applications.VGG16(include_top=False, weights='imagenet')

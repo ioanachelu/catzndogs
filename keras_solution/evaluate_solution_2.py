@@ -16,10 +16,8 @@ top_model_weights_path = './models/bottleneck_fc_model.h5'
 bottleneck_features ='./models/bottleneck_features_test.npy'
 test_data_dir = './data/test'
 train_data_dir = 'data/train'
-if K.image_data_format() == 'channels_first':
-    input_shape = (3, img_width, img_height)
-else:
-    input_shape = (img_width, img_height, 3)
+
+input_shape = (img_width, img_height, 3)
 
 test_datagen = ImageDataGenerator()
 test_generator = test_datagen.flow_from_directory(

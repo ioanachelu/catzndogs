@@ -19,7 +19,7 @@ validation_data_dir = 'data/validation'
 nb_train_samples = 20000
 nb_validation_samples = 5000
 epochs = 50
-batch_size = 128
+batch_size = 16
 
 # build the VGG16 network
 model = Sequential()
