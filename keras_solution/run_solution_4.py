@@ -10,7 +10,6 @@ from keras.utils.conv_utils import convert_kernel
 
 # path to the model weights files.
 top_model_weights_path = './models/bottleneck_fc_model.h5'
-weights_path = './vgg16_weights.h5'
 # dimensions of our images.
 img_width, img_height = 150, 150
 
@@ -83,7 +82,7 @@ model.add(top_model)
 
 # set the first 25 layers (up to the last conv block)
 # to non-trainable (weights will not be updated)
-for layer in top_model.layers[:14]:
+for layer in model.layers[:14]:
     layer.trainable = False
 
 # compile the model with a SGD/momentum optimizer
@@ -122,6 +121,6 @@ model.fit_generator(
     steps_per_epoch=nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=nb_validation_samples)
+    validation_steps=nb_validation_samples // batch_size)
 
 model.save_weights('./models/forth_try.h5')
