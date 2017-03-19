@@ -24,9 +24,9 @@ momentum = .9  # sgd momentum to avoid local minimum
 transformation_ratio = .05  # how aggressive will be the data augmentation/transformation
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
-top_model_weights_path = './models/top_model_weights.h5'
-final_model_weights_path = './models/model_weights.h5'
-model_path = './models/model.json'
+top_model_weights_path = './models/top_model_weights_inception.h5'
+final_model_weights_path = './models/model_weights_inception.h5'
+model_path = './models/model_inception.json'
 
 # Pre-Trained CNN Model using imagenet dataset for pre-trained weights
 base_model = Xception(input_shape=(img_width, img_height, 3), weights='imagenet', include_top=False)
