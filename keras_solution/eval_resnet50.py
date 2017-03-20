@@ -21,11 +21,11 @@ batch_size = 1  # try 4, 8, 16, 32, 64, 128, 256 dependent on CPU/GPU memory cap
 nb_epoch = 50  # number of iteration the algorithm gets trained.
 learn_rate = 1e-4  # sgd learning rate
 momentum = .9  # sgd momentum to avoid local minimum
-transformation_ratio = .2  # how aggressive will be the data augmentation/transformation
+transformation_ratio = .05  # how aggressive will be the data augmentation/transformation
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
-final_model_weights_path = './models/model_weights_resnet.h5'
-model_path = './models/model_resnet.json'
+final_model_weights_path = './models/model_weights_resnet_v2.h5'
+model_path = './models/model_resnet_v2.json'
 nb_train_samples = 20000
 nb_validation_samples = 5000
 test_data_dir = './data/test'
@@ -45,7 +45,7 @@ model = model_from_json(loaded_model_json)
 model.load_weights(final_model_weights_path)
 
 # Read Data
-test_datagen = ImageDataGenerator(preprocessing_function=preprocess_input_resnet)
+test_datagen = ImageDataGenerator(rescale=1. / 255)
 test_generator = test_datagen.flow_from_directory(test_data_dir,
                                                   target_size=(img_width, img_height),
                                                   batch_size=batch_size,

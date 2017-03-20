@@ -20,12 +20,12 @@ batch_size = 128  # try 4, 8, 16, 32, 64, 128, 256 dependent on CPU/GPU memory c
 nb_epoch = 50  # number of iteration the algorithm gets trained.
 learn_rate = 1e-4  # sgd learning rate
 momentum = .9  # sgd momentum to avoid local minimum
-transformation_ratio = .2  # how aggressive will be the data augmentation/transformation
+transformation_ratio = .05  # how aggressive will be the data augmentation/transformation
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
-top_model_weights_path = './models/top_model_weights_resnet.h5'
-final_model_weights_path = './models/model_weights_resnet.h5'
-model_path = './models/model_resnet.json'
+top_model_weights_path = './models/top_model_weights_resnet_v2.h5'
+final_model_weights_path = './models/model_weights_resnet_v2.h5'
+model_path = './models/model_resnet_v2.json'
 nb_train_samples = 20000
 nb_validation_samples = 5000
 
@@ -51,14 +51,14 @@ print(model.summary())
 for layer in base_model.layers:
     layer.trainable = False
 
-train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input_resnet,
+train_datagen = ImageDataGenerator(rescale=1. / 255,
                                    shear_range=transformation_ratio,
                                    zoom_range=transformation_ratio,
                                    cval=transformation_ratio,
                                    horizontal_flip=True,
                                    vertical_flip=True)
 
-validation_datagen = ImageDataGenerator(preprocessing_function=preprocess_input_resnet, )
+validation_datagen = ImageDataGenerator(rescale=1. / 255)
 
 # os.makedirs(os.path.join(os.path.abspath(train_data_dir), '../preview'), exist_ok=True)
 train_generator = train_datagen.flow_from_directory(train_data_dir,
