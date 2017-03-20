@@ -29,14 +29,14 @@ model_path = './models/model_resnet.json'
 nb_train_samples = 20000
 nb_validation_samples = 5000
 
-def preprocess_input_inception_v3(x):
+def preprocess_input_resnet(x):
     from keras.applications.resnet50 import preprocess_input
     X = np.expand_dims(x, axis=0)
     X = preprocess_input(X)
     return X[0]
 
 # Pre-Trained CNN Model using imagenet dataset for pre-trained weights
-base_model = ResNet50(input_shape=(img_width, img_height, 3), weights='imagenet', include_top=False, pooling="avg")
+base_model = ResNet50(input_shape=(img_width, img_height, 3), weights='imagenet', include_top=False)
 
 # Top Model Block
 x = base_model.output
@@ -51,14 +51,14 @@ print(model.summary())
 for layer in base_model.layers:
     layer.trainable = False
 
-train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input_inception_v3,
+train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input_resnet,
                                    shear_range=transformation_ratio,
                                    zoom_range=transformation_ratio,
                                    cval=transformation_ratio,
                                    horizontal_flip=True,
                                    vertical_flip=True)
 
-validation_datagen = ImageDataGenerator(preprocessing_function=preprocess_input_inception_v3,)
+validation_datagen = ImageDataGenerator(preprocessing_function=preprocess_input_resnet, )
 
 # os.makedirs(os.path.join(os.path.abspath(train_data_dir), '../preview'), exist_ok=True)
 train_generator = train_datagen.flow_from_directory(train_data_dir,
