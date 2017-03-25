@@ -43,6 +43,12 @@ model.compile(loss='binary_crossentropy',
               optimizer=optimizers.Nadam(lr=0.001),
               metrics=['accuracy'])
 
+def preprocess_input(x):
+    from keras.applications.vgg16 import preprocess_input
+    X = np.expand_dims(x, axis=0)
+    X = preprocess_input(X)
+    return X[0]
+
 # this is the augmentation configuration we will use for training
 # train_datagen = ImageDataGenerator(
 #     rescale=1. / 255,
@@ -50,19 +56,18 @@ model.compile(loss='binary_crossentropy',
 #     zoom_range=0.2,
 #     horizontal_flip=True)
 train_datagen = ImageDataGenerator(
-    rescale=1.,
-    featurewise_center=True,
+    preprocessing_function=preprocess_input,
     shear_range=0.2,
     zoom_range=0.2,
     horizontal_flip=True
 )
-train_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
+# train_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
 # this is the augmentation configuration we will use for testing:
 # only rescaling
 # test_datagen = ImageDataGenerator(rescale=1. / 255)
-test_datagen = ImageDataGenerator(rescale=1., featurewise_center=True)
-test_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
+test_datagen = ImageDataGenerator(preprocessing_function=preprocess_input,)
+# test_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
 train_generator = train_datagen.flow_from_directory(
     train_data_dir,
@@ -83,4 +88,4 @@ model.fit_generator(
     validation_data=validation_generator,
     validation_steps=nb_validation_samples // batch_size)
 
-model.save_weights('./models/first_try2.h5')
+model.save_weights('./models/first_try.h5')

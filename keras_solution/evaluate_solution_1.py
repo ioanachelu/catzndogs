@@ -6,13 +6,13 @@ from keras import backend as K
 import numpy as np
 from PIL import Image
 import os
-
+import csv
 # dimensions of our images.
 img_width, img_height = 150, 150
 batch_size = 1
 
 test_data_dir = './data/test'
-
+results_name = 'submission_1.csv'
 input_shape = (img_width, img_height, 3)
 
 model = Sequential()
@@ -37,33 +37,33 @@ model.add(Activation('sigmoid'))
 
 model.load_weights("./models/first_try.h5")
 
-test_datagen = ImageDataGenerator()
-test_generator = test_datagen.flow_from_directory(
-    test_data_dir,
-    target_size=(img_width, img_height),
-    batch_size=batch_size,
-    classes=None,
-    class_mode=None,
-    shuffle=False)
+def preprocess_input(x):
+    from keras.applications.vgg16 import preprocess_input
+    X = np.expand_dims(x, axis=0)
+    X = preprocess_input(X)
+    return X[0]
 
-paths = os.listdir('./data/test/unlabeled')
-submission = []
-for pred_count, batch in enumerate(test_generator):
-    if pred_count == 12500:
-        break;
-    # img = np.asarray(batch[0], np.uint8)
-    # img = Image.fromarray(img)
-    predict = model.predict_on_batch(batch)
-    # img.show()
-    id, ext = os.path.splitext(paths[pred_count])
-    submission.append([id, 1 - predict[0][0]])
+test_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)
+# test_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
+test_generator = test_datagen.flow_from_directory(test_data_dir,
+                                                  target_size=(img_width, img_height),
+                                                  batch_size=batch_size,
+                                                  shuffle=False)
 
-import csv
-with open('submission_1_v2.csv', 'w') as csvfile:
-    fieldnames = ['id', 'label']
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+# Calculate class posteriors probabilities
+y_probabilities = model.predict_generator(test_generator,
+                                          steps=12500)
+y_probabilities = [p[0] for p in y_probabilities]
+# Calculate class labels
 
-    writer.writeheader()
+filenames = [filename.split('/')[1] for filename in test_generator.filenames]
+ids = [int(filename.split('.')[0]) for filename in filenames]
 
-    for sub in submission:
-        writer.writerow({'id': sub[0], 'label': sub[1]})
+submission = list(zip(ids, y_probabilities))
+submission.sort(key=lambda t: t[0])
+
+# save results as a csv file in the specified results directory
+with open(results_name, 'w') as file:
+    writer = csv.writer(file)
+    writer.writerow(('id', 'label'))
+    writer.writerows(submission)
