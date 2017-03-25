@@ -5,6 +5,7 @@ from keras.layers import Activation, Dropout, Flatten, Dense
 from keras import backend as K
 from keras import optimizers
 import numpy as np
+from keras.callbacks import ModelCheckpoint, EarlyStopping
 
 # dimensions of our images.
 img_width, img_height = 150, 150
@@ -15,7 +16,7 @@ nb_train_samples = 20000
 nb_validation_samples = 5000
 epochs = 50
 batch_size = 128
-
+model_weights_path = './models/first_try.h5'
 
 input_shape = (img_width, img_height, 3)
 
@@ -42,6 +43,11 @@ model.add(Activation('sigmoid'))
 model.compile(loss='binary_crossentropy',
               optimizer=optimizers.Nadam(lr=0.001),
               metrics=['accuracy'])
+
+callbacks_list = [
+    ModelCheckpoint(model_weights_path, monitor='val_acc', verbose=1, save_best_only=True),
+    EarlyStopping(monitor='val_acc', patience=5, verbose=0)
+]
 
 def preprocess_input(x):
     from keras.applications.vgg16 import preprocess_input
@@ -86,6 +92,7 @@ model.fit_generator(
     steps_per_epoch=nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=nb_validation_samples // batch_size)
+    validation_steps=nb_validation_samples // batch_size,
+    callbacks=callbacks_list)
 
-model.save_weights('./models/first_try.h5')
+

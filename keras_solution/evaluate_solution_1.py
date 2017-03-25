@@ -7,6 +7,7 @@ import numpy as np
 from PIL import Image
 import os
 import csv
+
 # dimensions of our images.
 img_width, img_height = 150, 150
 batch_size = 1
