@@ -43,7 +43,7 @@ def preprocess_input(x):
     X = preprocess_input(X)
     return X[0]
 
-test_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)
+test_datagen = ImageDataGenerator(rescale=1. / 255)
 # test_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 test_generator = test_datagen.flow_from_directory(test_data_dir,
                                                   target_size=(img_width, img_height),

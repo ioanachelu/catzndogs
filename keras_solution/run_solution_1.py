@@ -56,7 +56,7 @@ def preprocess_input(x):
 #     zoom_range=0.2,
 #     horizontal_flip=True)
 train_datagen = ImageDataGenerator(
-    preprocessing_function=preprocess_input,
+    rescale=1. / 255,
     shear_range=0.2,
     zoom_range=0.2,
     horizontal_flip=True
@@ -65,8 +65,8 @@ train_datagen = ImageDataGenerator(
 
 # this is the augmentation configuration we will use for testing:
 # only rescaling
-# test_datagen = ImageDataGenerator(rescale=1. / 255)
-test_datagen = ImageDataGenerator(preprocessing_function=preprocess_input,)
+test_datagen = ImageDataGenerator(rescale=1. / 255)
+# test_datagen = ImageDataGenerator(preprocessing_function=preprocess_input,)
 # test_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
 train_generator = train_datagen.flow_from_directory(
