@@ -29,7 +29,7 @@ model_path = './models/model_inception.json'
 nb_train_samples = 20000
 nb_validation_samples = 5000
 test_data_dir = './data/test'
-results_name = 'submission_5.csv'
+results_name = 'submission_xception.csv'
 
 json_file = open(model_path, 'r')
 
