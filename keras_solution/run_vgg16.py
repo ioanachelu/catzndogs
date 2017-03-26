@@ -7,6 +7,7 @@ from keras.models import Model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras import backend as k
+from keras import optimizers
 
 # fix seed for reproducible results (only works on CPU, not GPU)
 seed = 9
@@ -113,10 +114,11 @@ for layer in model.layers[based_model_last_block_layer_number:]:
 
 # compile the model with a SGD/momentum optimizer
 # and a very slow learning rate.
-model.compile(optimizer='rmsprop',
-              loss='binary_crossentropy',
-              metrics=['accuracy'])
-
+# model.compile(optimizer='rmsprop',
+#               loss='binary_crossentropy',
+#               metrics=['accuracy'])
+sgd = optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
+model.compile(loss='binary_crossentropy', optimizer=sgd, metrics=['accuracy'])
 # save weights of best training epoch: monitor either val_loss or val_acc
 
 callbacks_list = [
