@@ -34,8 +34,8 @@ base_model = VGG16(input_shape=(img_width, img_height, 3), weights='imagenet', i
 
 # Top Model Block
 x = base_model.output
-x = Flatten(input_shape=base_model.output_shape[1:])(x)
-x = Dense(256, activation='relu')(x)
+# x = Flatten(input_shape=base_model.output_shape[1:])(x)
+# x = Dense(256, activation='relu')(x)
 x = Dropout(0.5)(x)
 predictions = Dense(1, activation='sigmoid')(x)
 
