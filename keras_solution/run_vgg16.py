@@ -16,7 +16,7 @@ tf.set_random_seed(seed=seed)
 
 # hyper parameters for model
 based_model_last_block_layer_number = 15  # value is based on based model selected.
-img_width, img_height = 150, 150  # change based on the shape/structure of your images
+img_width, img_height = 224, 224  # change based on the shape/structure of your images
 batch_size = 32  # try 4, 8, 16, 32, 64, 128, 256 dependent on CPU/GPU memory capacity (powers of 2 values).
 nb_epoch = 50  # number of iteration the algorithm gets trained.
 learn_rate = 1e-4  # sgd learning rate
@@ -36,9 +36,9 @@ base_model = VGG16(input_shape=(img_width, img_height, 3), weights='imagenet', i
 # Top Model Block
 x = base_model.output
 x = Flatten(input_shape=base_model.output_shape[1:])(x)
-x = Dropout(0.5)(x)
-x = Dense(256, activation='relu')(x)
-x = Dropout(0.5)(x)
+# x = Dropout(0.5)(x)
+# x = Dense(256, activation='relu')(x)
+# x = Dropout(0.5)(x)
 predictions = Dense(1, activation='sigmoid')(x)
 
 # add your top layer block to your base model
@@ -76,7 +76,7 @@ validation_generator = validation_datagen.flow_from_directory(validation_data_di
                                                               batch_size=batch_size,
                                                               class_mode='binary')
 
-model.compile(optimizer='rmsprop',
+model.compile(optimizer='nadam',
               loss='binary_crossentropy',  # categorical_crossentropy if multi-class classifier
               metrics=['accuracy'])
 
@@ -114,11 +114,11 @@ for layer in model.layers[based_model_last_block_layer_number:]:
 
 # compile the model with a SGD/momentum optimizer
 # and a very slow learning rate.
-# model.compile(optimizer='rmsprop',
-#               loss='binary_crossentropy',
-#               metrics=['accuracy'])
-sgd = optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
-model.compile(loss='binary_crossentropy', optimizer=sgd, metrics=['accuracy'])
+model.compile(optimizer='nadam',
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+# sgd = optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
+# model.compile(loss='binary_crossentropy', optimizer=sgd, metrics=['accuracy'])
 # save weights of best training epoch: monitor either val_loss or val_acc
 
 callbacks_list = [
