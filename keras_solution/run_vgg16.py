@@ -31,11 +31,15 @@ nb_train_samples = 20000
 nb_validation_samples = 5000
 
 # Pre-Trained CNN Model using imagenet dataset for pre-trained weights
-base_model = VGG16(input_shape=(img_width, img_height, 3), weights='imagenet', include_top=False)
+base_model = VGG16(input_shape=(img_width, img_height, 3), weights='imagenet', include_top=True)
+
+base_model.layers.pop()
+base_model.outputs = [base_model.layers[-1].output]
+base_model.layers[-1].outbound_nodes = []
 
 # Top Model Block
 x = base_model.output
-x = Flatten(input_shape=base_model.output_shape[1:])(x)
+# x = Flatten(input_shape=base_model.output_shape[1:])(x)
 # x = Dropout(0.5)(x)
 # x = Dense(256, activation='relu')(x)
 # x = Dropout(0.5)(x)
