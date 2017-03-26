@@ -46,15 +46,18 @@ print(model.summary())
 for layer in base_model.layers:
     layer.trainable = False
 
-train_datagen = ImageDataGenerator(rescale=1. / 255,
+train_datagen = ImageDataGenerator(rescale=1.,
+                                   featurewise_center=True,
                                    rotation_range=transformation_ratio,
                                    shear_range=transformation_ratio,
                                    zoom_range=transformation_ratio,
                                    cval=transformation_ratio,
                                    horizontal_flip=True,
                                    vertical_flip=True)
+train_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
-validation_datagen = ImageDataGenerator(rescale=1. / 255)
+validation_datagen = ImageDataGenerator(rescale=1., featurewise_center=True,)
+validation_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
 # os.makedirs(os.path.join(os.path.abspath(train_data_dir), '../preview'), exist_ok=True)
 train_generator = train_datagen.flow_from_directory(train_data_dir,
