@@ -3,7 +3,7 @@ import os
 from keras.layers import *
 from keras.optimizers import *
 from keras.applications import *
-from keras.models import Model
+from keras.models import Model, Sequential
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras import backend as k
@@ -31,39 +31,52 @@ nb_train_samples = 20000
 nb_validation_samples = 5000
 
 # Pre-Trained CNN Model using imagenet dataset for pre-trained weights
-base_model = VGG16(input_shape=(img_width, img_height, 3), weights='imagenet', include_top=True)
-
-base_model.layers.pop()
-base_model.outputs = [base_model.layers[-1].output]
-base_model.layers[-1].outbound_nodes = []
+base_model = VGG16(input_shape=(img_width, img_height, 3), weights='imagenet', include_top=False)
 
 # Top Model Block
-x = base_model.output
-# x = Flatten(input_shape=base_model.output_shape[1:])(x)
+# x = base_model.output
+# x = Flatten()(x)
 # x = Dropout(0.5)(x)
 # x = Dense(256, activation='relu')(x)
 # x = Dropout(0.5)(x)
-predictions = Dense(1, activation='sigmoid')(x)
+# predictions = Dense(1, activation='sigmoid')(x)
+
+# base_model.layers.pop()
+# base_model.outputs = [base_model.layers[-1].output]
+# base_model.layers[-1].outbound_nodes = []
+#
+# # Top Model Block
+# x = base_model.output
+# # x = Flatten(input_shape=base_model.output_shape[1:])(x)
+# x = Dropout(0.5)(x)
+# x = Dense(256, activation='relu')(x)
+# x = Dropout(0.5)(x)
+# predictions = Dense(1, activation='sigmoid')(x)
+top_model = Sequential()
+top_model.add(Flatten(input_shape=base_model.output_shape[1:]))
+top_model.add(Dense(256, activation='relu'))
+top_model.add(Dropout(0.5))
+top_model.add(Dense(1, activation='sigmoid'))
 
 # add your top layer block to your base model
-model = Model(base_model.input, predictions)
+model = Model(input=base_model.input, output=top_model(base_model.output))
+model_json = model.to_json()
+with open(model_path, 'w') as json_file:
+    json_file.write(model_json)
+
 print(model.summary())
 
 for layer in base_model.layers:
     layer.trainable = False
 
-train_datagen = ImageDataGenerator(rescale=1.,
-                                   featurewise_center=True,
-                                   rotation_range=transformation_ratio,
-                                   shear_range=transformation_ratio,
-                                   zoom_range=transformation_ratio,
-                                   cval=transformation_ratio,
-                                   horizontal_flip=True,
-                                   vertical_flip=True)
-train_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
+train_datagen = ImageDataGenerator(rescale=1. / 255,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True)
+# train_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
-validation_datagen = ImageDataGenerator(rescale=1., featurewise_center=True,)
-validation_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
+validation_datagen = ImageDataGenerator(rescale=1. / 255)
+# validation_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
 # os.makedirs(os.path.join(os.path.abspath(train_data_dir), '../preview'), exist_ok=True)
 train_generator = train_datagen.flow_from_directory(train_data_dir,
@@ -80,7 +93,7 @@ validation_generator = validation_datagen.flow_from_directory(validation_data_di
                                                               batch_size=batch_size,
                                                               class_mode='binary')
 
-model.compile(optimizer='nadam',
+model.compile(optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
               loss='binary_crossentropy',  # categorical_crossentropy if multi-class classifier
               metrics=['accuracy'])
 
@@ -92,10 +105,10 @@ callbacks_list = [
 
 # Train Simple CNN
 model.fit_generator(train_generator,
-                    samples_per_epoch=nb_train_samples // nb_epoch,
+                    samples_per_epoch=nb_train_samples,
                     nb_epoch=nb_epoch / 5,
                     validation_data=validation_generator,
-                    nb_val_samples=nb_validation_samples // nb_epoch,
+                    nb_val_samples=nb_validation_samples,
                     callbacks=callbacks_list)
 
 # verbose
@@ -118,12 +131,16 @@ for layer in model.layers[based_model_last_block_layer_number:]:
 
 # compile the model with a SGD/momentum optimizer
 # and a very slow learning rate.
-model.compile(optimizer='nadam',
-              loss='binary_crossentropy',
-              metrics=['accuracy'])
+# model.compile(optimizer='nadam',
+#               loss='binary_crossentropy',
+#               metrics=['accuracy'])
 # sgd = optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
 # model.compile(loss='binary_crossentropy', optimizer=sgd, metrics=['accuracy'])
 # save weights of best training epoch: monitor either val_loss or val_acc
+opt = optimizers.SGD(lr=1e-5, momentum=0.9)
+model.compile(optimizer=opt,
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
 
 callbacks_list = [
     ModelCheckpoint(final_model_weights_path, monitor='val_acc', verbose=1, save_best_only=True),
@@ -132,10 +149,10 @@ callbacks_list = [
 
 # fine-tune the model
 model.fit_generator(train_generator,
-                    samples_per_epoch=nb_train_samples // nb_epoch,
+                    samples_per_epoch=nb_train_samples,
                     nb_epoch=nb_epoch,
                     validation_data=validation_generator,
-                    nb_val_samples=nb_validation_samples // nb_epoch,
+                    nb_val_samples=nb_validation_samples,
                     callbacks=callbacks_list)
 
 # save model

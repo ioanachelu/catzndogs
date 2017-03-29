@@ -20,7 +20,7 @@ batch_size = 32  # try 4, 8, 16, 32, 64, 128, 256 dependent on CPU/GPU memory ca
 nb_epoch = 50  # number of iteration the algorithm gets trained.
 learn_rate = 1e-4  # sgd learning rate
 momentum = .9  # sgd momentum to avoid local minimum
-transformation_ratio = .05  # how aggressive will be the data augmentation/transformation
+transformation_ratio = .2  # how aggressive will be the data augmentation/transformation
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
 top_model_weights_path = './models/top_model_weights_inception.h5'
@@ -107,7 +107,12 @@ for layer in model.layers[based_model_last_block_layer_number:]:
 
 # compile the model with a SGD/momentum optimizer
 # and a very slow learning rate.
-model.compile(optimizer='nadam',
+# model.compile(optimizer='nadam',
+#               loss='binary_crossentropy',
+#               metrics=['accuracy'])
+
+opt = SGD(lr=0.00001, momentum=0.0, decay=0.0, nesterov=False)
+model.compile(optimizer=opt,
               loss='binary_crossentropy',
               metrics=['accuracy'])
 

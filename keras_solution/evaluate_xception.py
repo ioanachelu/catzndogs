@@ -47,7 +47,7 @@ test_generator = test_datagen.flow_from_directory(test_data_dir,
 
 # Calculate class posteriors probabilities
 y_probabilities = model.predict_generator(test_generator,
-                                          steps=12500)
+                                          val_samples=12500)
 y_probabilities = [p[0] for p in y_probabilities]
 # Calculate class labels
 
