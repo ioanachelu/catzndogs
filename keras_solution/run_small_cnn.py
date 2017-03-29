@@ -2,12 +2,10 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
-from keras import backend as K
 from keras import optimizers
 import numpy as np
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 
-# dimensions of our images.
 img_width, img_height = 150, 150
 
 train_data_dir = 'data/train'
@@ -16,7 +14,7 @@ nb_train_samples = 20000
 nb_validation_samples = 5000
 epochs = 50
 batch_size = 128
-model_weights_path = './models/first_try.h5'
+model_weights_path = './models/small_cnn.h5'
 
 input_shape = (img_width, img_height, 3)
 
@@ -49,31 +47,13 @@ callbacks_list = [
     EarlyStopping(monitor='val_acc', patience=5, verbose=0)
 ]
 
-def preprocess_input(x):
-    from keras.applications.vgg16 import preprocess_input
-    X = np.expand_dims(x, axis=0)
-    X = preprocess_input(X)
-    return X[0]
-
-# this is the augmentation configuration we will use for training
-# train_datagen = ImageDataGenerator(
-#     rescale=1. / 255,
-#     shear_range=0.2,
-#     zoom_range=0.2,
-#     horizontal_flip=True)
 train_datagen = ImageDataGenerator(
     rescale=1. / 255,
     shear_range=0.2,
     zoom_range=0.2,
     horizontal_flip=True
 )
-# train_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
-
-# this is the augmentation configuration we will use for testing:
-# only rescaling
 test_datagen = ImageDataGenerator(rescale=1. / 255)
-# test_datagen = ImageDataGenerator(preprocessing_function=preprocess_input,)
-# test_datagen.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32)
 
 train_generator = train_datagen.flow_from_directory(
     train_data_dir,
