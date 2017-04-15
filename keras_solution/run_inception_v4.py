@@ -4,6 +4,7 @@ from keras.applications import *
 from keras.models import Model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint, EarlyStopping
+import inception_v4
 
 seed = 42
 np.random.seed(seed=seed)
@@ -23,7 +24,14 @@ nb_train_samples = 20000
 nb_validation_samples = 5000
 
 
-base_model = Xception(input_shape=(img_width, img_height, 3), weights='imagenet', include_top=False)
+base_model = inception_v4.create_model(weights='imagenet')
+
+# # ... Load pre-trained VGG16 model
+#
+# model.layers.pop() # Get rid of the classification layer
+# model.layers.pop() # Get rid of the dropout layer
+# model.outputs = [model.layers[-1].output]
+# model.layers[-1].outbound_nodes = []
 x = base_model.output
 x = GlobalAveragePooling2D()(x)
 predictions = Dense(1, activation='sigmoid')(x)

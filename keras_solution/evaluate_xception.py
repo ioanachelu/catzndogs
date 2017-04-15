@@ -16,12 +16,12 @@ momentum = .9
 transformation_ratio = .2
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
-final_model_weights_path = './models/model_weights_inception.h5'
-model_path = './models/model_inception.json'
+final_model_weights_path = './models/model_weights_inception_3.h5'
+model_path = './models/model_inception_3.json'
 nb_train_samples = 20000
 nb_validation_samples = 5000
 test_data_dir = './data/test'
-results_name = 'submission_xception.csv'
+results_name = 'submission_xception_4.csv'
 
 json_file = open(model_path, 'r')
 
