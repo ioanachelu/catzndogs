@@ -3,6 +3,7 @@ from keras.optimizers import *
 from keras.preprocessing.image import ImageDataGenerator
 import csv
 from keras.models import model_from_json
+from keras.applications.xception import preprocess_input
 seed = 42
 np.random.seed(seed=seed)
 tf.set_random_seed(seed=seed)
@@ -16,12 +17,12 @@ momentum = .9
 transformation_ratio = .2
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
-final_model_weights_path = './models/model_weights_inception_3.h5'
-model_path = './models/model_inception_3.json'
+final_model_weights_path = './models/model_weights_inception_4.h5'
+model_path = './models/model_inception_4.json'
 nb_train_samples = 20000
 nb_validation_samples = 5000
 test_data_dir = './data/test'
-results_name = 'submission_xception_4.csv'
+results_name = 'submission_xception_5.csv'
 
 json_file = open(model_path, 'r')
 
@@ -30,7 +31,7 @@ json_file.close()
 model = model_from_json(loaded_model_json)
 model.load_weights(final_model_weights_path)
 
-test_datagen = ImageDataGenerator(rescale=1. / 255)
+test_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)
 test_generator = test_datagen.flow_from_directory(test_data_dir,
                                                   target_size=(img_width, img_height),
                                                   batch_size=batch_size,
