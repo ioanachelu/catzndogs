@@ -25,7 +25,7 @@ nb_train_samples = 20000
 nb_validation_samples = 5000
 
 
-base_model = inception_v4.create_model(weights='imagenet', include_top=False)
+base_model = inception_v4.create_model(input_shape=(img_width, img_height, 3), weights='imagenet', include_top=False)
 
 
 # # ... Load pre-trained VGG16 model

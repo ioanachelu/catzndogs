@@ -6,6 +6,7 @@ from keras.layers import Input, Dropout, Dense, Flatten, Activation
 from keras.layers.normalization import BatchNormalization
 from keras.layers.merge import concatenate
 from keras.models import Model
+from keras.applications.imagenet_utils import _obtain_input_shape
 # Backend
 from keras import backend as K
 # Utils
@@ -209,7 +210,7 @@ def inception_v4_base(input):
     return net
 
 
-def inception_v4(num_classes, dropout_keep_prob, weights, include_top):
+def inception_v4(input_shape, num_classes, dropout_keep_prob, weights, include_top):
     '''
     Creates the inception v4 network
 
@@ -222,10 +223,17 @@ def inception_v4(num_classes, dropout_keep_prob, weights, include_top):
     '''
 
     # Input Shape is 299 x 299 x 3 (tf) or 3 x 299 x 299 (th)
-    if K.image_data_format() == 'channels_first':
-        inputs = Input((3, 299, 299))
-    else:
-        inputs = Input((299, 299, 3))
+    # if K.image_data_format() == 'channels_first':
+    #     inputs = Input((3, 299, 299))
+    # else:
+    #     inputs = Input((299, 299, 3))
+    # Determine proper input shape
+    input_shape = _obtain_input_shape(input_shape,
+                                      default_size=299,
+                                      min_size=71,
+                                      data_format=K.image_data_format(),
+                                      include_top=include_top)
+    inputs = Input(shape=input_shape)
 
     # Make inception base
     x = inception_v4_base(inputs)
@@ -274,5 +282,5 @@ def inception_v4(num_classes, dropout_keep_prob, weights, include_top):
     return model
 
 
-def create_model(num_classes=1001, dropout_prob=0.2, weights=None, include_top=True):
-    return inception_v4(num_classes, dropout_prob, weights, include_top)
+def create_model(input_shape, num_classes=1001, dropout_prob=0.2, weights=None, include_top=True):
+    return inception_v4(input_shape, num_classes, dropout_prob, weights, include_top)
