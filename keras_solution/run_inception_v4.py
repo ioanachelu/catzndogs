@@ -4,27 +4,29 @@ from keras.applications import *
 from keras.models import Model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint, EarlyStopping
+from keras.applications.xception import preprocess_input
 import inception_v4
 
 seed = 42
 np.random.seed(seed=seed)
 tf.set_random_seed(seed=seed)
 
-based_model_last_block_layer_number = 126
+based_model_last_block_layer_number = 400
 img_width, img_height = 229, 229
 batch_size = 32
 nb_epoch = 50
 transformation_ratio = .5
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
-top_model_weights_path = './models/top_model_weights_inception_3.h5'
-final_model_weights_path = './models/model_weights_inception_3.h5'
-model_path = './models/model_inception_3.json'
+top_model_weights_path = './models/top_model_weights_inception_v4.h5'
+final_model_weights_path = './models/model_weights_inception_v4.h5'
+model_path = './models/model_inception_v4.json'
 nb_train_samples = 20000
 nb_validation_samples = 5000
 
 
-base_model = inception_v4.create_model(weights='imagenet')
+base_model = inception_v4.create_model(weights='imagenet', include_top=False)
+
 
 # # ... Load pre-trained VGG16 model
 #
@@ -41,7 +43,7 @@ print(model.summary())
 for layer in base_model.layers:
     layer.trainable = False
 
-train_datagen = ImageDataGenerator(rescale=1. / 255,
+train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input,
                                    rotation_range=40,
                                    width_shift_range=0.2,
                                    height_shift_range=0.2,
@@ -50,9 +52,7 @@ train_datagen = ImageDataGenerator(rescale=1. / 255,
                                    horizontal_flip=True,
                                    fill_mode='nearest')
 
-
-validation_datagen = ImageDataGenerator(rescale=1. / 255)
-
+validation_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)
 
 train_generator = train_datagen.flow_from_directory(train_data_dir,
                                                     target_size=(img_width, img_height),
